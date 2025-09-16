@@ -1,0 +1,6 @@
+thresholds:
+  distance: 0.6
+  confidence: 0.9
+
+images:
+  folder: "images/"

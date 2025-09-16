@@ -1,0 +1,18 @@
+<h3>Attendance Dashboard</h3>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Student ID</th>
+      <th>Timestamp</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% records.forEach(r => { %>
+      <tr>
+        <td><%= r.studentId %></td>
+        <td><%= new Date(r.timestamp).toLocaleString() %></td>
+      </tr>
+    <% }) %>
+  </tbody>
+</table>

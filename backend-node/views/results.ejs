@@ -1,0 +1,15 @@
+<h3>Processing Results</h3>
+
+<% if (result.summary && result.summary.length > 0) { %>
+  <div class="list-group">
+    <% result.summary.forEach(s => { %>
+      <div class="list-group-item">
+        <strong><%= s.user %></strong> — detected <%= s.count %> times at: <%= s.times.join(", ") %> sec
+      </div>
+    <% }) %>
+  </div>
+<% } else { %>
+  <div class="alert alert-warning">No known faces detected.</div>
+<% } %>
+
+<a class="btn btn-secondary mt-3" href="/dashboard">Go to Dashboard</a>
