@@ -42,20 +42,22 @@ Open 3 seperate cmd
 
 pip install -r requirements.txt
   
- 1) 1st cmd run - "npm init -y"
- 2) 1st cmd run - "npm install express ejs body-parser mongoose multer axios form-data"
- 3) 1st cmd run - "npm install express-ejs-layouts"
- 4) 1st cmd run - "node server.js"
- 5) 2nd cmd run - "python enroll_api.py"
- 6) 3rd cmd run - "python video_recognize_api.py"
+1) cd backend-node
+2) 1st cmd run - "npm init -y"
+3) 1st cmd run - "npm install express ejs body-parser mongoose multer axios form-data"
+4) 1st cmd run - "npm install express-ejs-layouts"
+5) 1st cmd run - "node server.js"
+6)  2nd xmd - cd ml-service-python
+               activate virtual environment
+               .venv\Scripts\activate
+7) 2nd cmd run - "python enroll_api.py"
+
+8) 3rd cmd run - cd ml-service-python
+                  activate virtual environment
+                  .venv\Scripts\activate 
+ 9) 3rd cmd run - "python video_recognize_api.py"
+
 Now open server one by one. 
 
-1) cd backend-node
-2) cd ml-service-python
-activate virtual environment
-.venv\Scripts\activate
-python enroll_api.py
-3) cd ml-service-python
-activate virtual environment
-.venv\Scripts\activate
-python video_recognize_api.py
+
+
