@@ -47,7 +47,7 @@ pip install -r requirements.txt
 3) 1st cmd run - "npm install express ejs body-parser mongoose multer axios form-data"
 4) 1st cmd run - "npm install express-ejs-layouts"
 5) 1st cmd run - "node server.js"
-6)  2nd xmd - cd ml-service-python
+6) 2nd cmd - cd ml-service-python
                activate virtual environment
                .venv\Scripts\activate
 7) 2nd cmd run - "python enroll_api.py"
