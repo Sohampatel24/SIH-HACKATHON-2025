@@ -49,3 +49,13 @@ pip install -r requirements.txt
  5) 2nd cmd run - "python enroll_api.py"
  6) 3rd cmd run - "python video_recognize_api.py"
 Now open server one by one. 
+
+1) cd backend-node
+2) cd ml-service-python
+activate virtual environment
+.venv\Scripts\activate
+python enroll_api.py
+3) cd ml-service-python
+activate virtual environment
+.venv\Scripts\activate
+python video_recognize_api.py
