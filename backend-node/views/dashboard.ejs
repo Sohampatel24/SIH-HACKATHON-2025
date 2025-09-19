@@ -1,18 +1,62 @@
 <h3>Attendance Dashboard</h3>
 
+<!-- Filter Form -->
+<form method="GET" action="/dashboard" class="row g-3 mb-4">
+  <div class="col-md-4">
+    <label class="form-label">Filter by Date</label>
+    <input
+      type="date"
+      name="date"
+      class="form-control"
+      value="<%= filters && filters.date ? filters.date : '' %>"
+    />
+  </div>
+
+  <div class="col-md-4">
+    <label class="form-label">Filter by Lecture</label>
+    <select name="lectureNumber" class="form-select">
+      <option value="">All Lectures</option>
+      <% for (let i = 1; i <= 4; i++) { %>
+        <option
+          value="<%= i %>"
+          <%= filters && filters.lectureNumber == i ? 'selected' : '' %>>
+          Lecture <%= i %>
+        </option>
+      <% } %>
+    </select>
+  </div>
+
+  <div class="col-md-4 d-flex align-items-end">
+    <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+  </div>
+</form>
+
+<!-- Records Table -->
 <table class="table table-striped">
   <thead>
     <tr>
+      <th>Date</th>
+      <th>Lecture</th>
+      <th>Subject</th>
       <th>Student ID</th>
       <th>Timestamp</th>
     </tr>
   </thead>
   <tbody>
-    <% records.forEach(r => { %>
+    <% if (records && records.length > 0) { %>
+      <% records.forEach(r => { %>
+        <tr>
+          <td><%= r.date || new Date(r.timestamp).toISOString().split('T')[0] %></td>
+          <td><%= r.lectureNumber ? r.lectureNumber : "-" %></td>
+          <td><%= r.subject ? r.subject : "-" %></td>
+          <td><%= r.studentId %></td>
+          <td><%= new Date(r.timestamp).toLocaleString() %></td>
+        </tr>
+      <% }) %>
+    <% } else { %>
       <tr>
-        <td><%= r.studentId %></td>
-        <td><%= new Date(r.timestamp).toLocaleString() %></td>
+        <td colspan="5" class="text-center text-muted">No records found</td>
       </tr>
-    <% }) %>
+    <% } %>
   </tbody>
 </table>

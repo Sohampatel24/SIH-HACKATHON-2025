@@ -1,0 +1,29 @@
+<h2 class="mb-3">Registered Students</h2>
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Roll No</th>
+      <th>Email</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% students.forEach(student => { %>
+    <tr>
+      <td><%= student.name %></td>
+      <td><%= student.rollno %></td>
+      <td><%= student.email %></td>
+      <td>
+        <form
+          action="/students/<%= student._id %>/delete"
+          method="POST"
+          style="display:inline;"
+        >
+          <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+        </form>
+      </td>
+    </tr>
+    <% }) %>
+  </tbody>
+</table>

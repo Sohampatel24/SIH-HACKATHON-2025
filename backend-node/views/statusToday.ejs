@@ -1,0 +1,30 @@
+<div class="card mt-4">
+  <div class="card-body">
+    <h5 class="card-title">Today's Attendance Progress</h5>
+
+    <% if (progress.length === 0) { %>
+      <div class="alert alert-warning">
+        No timetable found for today (weekend or timetable not generated).
+      </div>
+    <% } else { %>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Lecture No</th>
+            <th>Subject</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% progress.forEach((p) => { %>
+            <tr>
+              <td><%= p.lectureNumber %></td>
+              <td><%= p.subject %></td>
+              <td><%= p.status %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } %>
+  </div>
+</div>

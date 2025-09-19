@@ -1,0 +1,50 @@
+<div class="card">
+  <div class="card-body">
+    <h4 class="card-title">Attendance Analysis — <%= dateKey %></h4>
+    <p>Lectures today: <%= subjectsToday && subjectsToday.length>0 ? subjectsToday.join(", ") : "None" %></p>
+
+    <h5 class="mt-4 text-success">✅ >= 90% attendance</h5>
+    <% if (high.length>0) { %>
+      <ul>
+        <% high.forEach(h => { %>
+          <li><%= h.student.name %> — <%= h.percentage %>%</li>
+        <% }) %>
+      </ul>
+    <% } else { %>
+      <div class="text-muted">No students at/above 90%.</div>
+    <% } %>
+
+    <h5 class="mt-4 text-danger">⚠️ &lt; 50% attendance</h5>
+    <% if (low.length>0) { %>
+      <ul>
+        <% low.forEach(l => { %>
+          <li><%= l.student.name %> — <%= l.percentage %>%</li>
+        <% }) %>
+      </ul>
+    <% } else { %>
+      <div class="text-muted">No students below 50%.</div>
+    <% } %>
+
+    <h5 class="mt-4">📊 Detail</h5>
+    <table class="table table-bordered">
+      <thead><tr><th>Student</th><th>%</th><th>Lectures Attended</th></tr></thead>
+      <tbody>
+        <% stats.forEach(s => { %>
+          <tr>
+            <td><%= s.student.name %></td>
+            <td><%= s.percentage %>%</td>
+            <td>
+              <% if (s.attendedLectures.length > 0) { %>
+                <% s.attendedLectures.forEach(a => { %>
+                  <span class="badge bg-primary me-1">L<%= a.lectureNumber %>: <%= a.subject %></span>
+                <% }) %>
+              <% } else { %>
+                <span class="text-muted">None</span>
+              <% } %>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
