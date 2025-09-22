@@ -95,7 +95,7 @@ router.post("/upload", upload.single("video"), async (req, res) => {
       if (uploadedPath && fs.existsSync(uploadedPath)) fs.unlinkSync(uploadedPath);
       return res.render("upload", {
         subjectsToday,
-        error: "⚠️ Attendance for this lecture is already recorded today.",
+        error: "⚠ Attendance for this lecture is already recorded today.",
         allDone: false
       });
     }

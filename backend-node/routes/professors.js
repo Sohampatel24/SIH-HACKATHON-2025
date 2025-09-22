@@ -5,42 +5,51 @@ const fs = require("fs");
 const path = require("path");
 const FormData = require("form-data");
 const axios = require("axios");
-const Student = require("../models/Student");
 const bcrypt = require("bcrypt");
+const Professor = require("../models/Professor");
+
 const upload = multer({ dest: "uploads/" });
 
 // ---------------- ENROLL ----------------
 router.get("/enroll", (req, res) => {
-  res.render("enroll");
+  res.render("profenroll");
 });
 
 router.post("/enroll", upload.array("photos", 5), async (req, res) => {
   try {
-    const { name, rollno, email, password } = req.body;
+    const { name, email, subject, password } = req.body;
 
-    if (!name || !rollno || !email || !password) {
+    if (!name || !email || !subject || !password) {
       return res.status(400).send("All fields are required");
     }
 
-    // Save student to MongoDB
-    const hashedPassword = await bcrypt.hash(password, 10);  // saltRounds = 10
-    await Student.create({ name, rollno, email, password: hashedPassword });
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Forward photos to Python enroll API
+    // Save professor to DB
+    await Professor.create({
+      name,
+      email,
+      subject,
+      password: hashedPassword,
+    });
+
+    // Forward images to Python ML service
     if (!req.files || req.files.length === 0) {
       return res.status(400).send("At least one photo is required");
     }
 
     const form = new FormData();
     form.append("name", name);
-    form.append("rollno", rollno);
+    form.append("subject", subject);
+
     for (const f of req.files) {
       form.append("photos", fs.createReadStream(f.path), {
         filename: f.originalname,
       });
     }
 
-    await axios.post("http://localhost:5001/enroll", form, {
+    await axios.post("http://localhost:5003/enroll-professor", form, {
       headers: form.getHeaders(),
       maxContentLength: Infinity,
       maxBodyLength: Infinity,
@@ -55,56 +64,54 @@ router.post("/enroll", upload.array("photos", 5), async (req, res) => {
       }
     }
 
-    res.redirect("/students");
+    res.redirect("/professors");
   } catch (err) {
     console.error(err);
     res.status(500).send("Enrollment failed: " + err.message);
   }
 });
 
-// ---------------- LIST STUDENTS ----------------
+// ---------------- LIST PROFESSORS ----------------
 router.get("/", async (req, res) => {
   try {
-    const students = await Student.find().sort({ createdAt: -1 }).lean();
-    res.render("students", { students });
+    const professors = await Professor.find().sort({ createdAt: -1 }).lean();
+    res.render("professors", { professors });
   } catch (err) {
     console.error(err);
-    res.status(500).send("Error loading students");
+    res.status(500).send("Error loading professors");
   }
 });
 
-// ---------------- DELETE STUDENT ----------------
+// ---------------- DELETE PROFESSOR ----------------
 router.post("/:id/delete", async (req, res) => {
   try {
-    const student = await Student.findById(req.params.id);
-    if (!student) return res.status(404).send("Student not found");
+    const professor = await Professor.findById(req.params.id);
+    if (!professor) return res.status(404).send("Professor not found");
 
-    // 1. Delete student from DB
-    await Student.findByIdAndDelete(req.params.id);
+    await Professor.findByIdAndDelete(req.params.id);
 
-    // 2. Delete embeddings file
+    // Delete embedding file (uses subject as identifier)
     const embPath = path.join(
-  __dirname,
-  "../../ml-service-python/embeddings",
-  `${student.name}.npy`
-);
-
+      __dirname,
+      "../../ml-service-python/embeddings",
+      `${professor.subject}.npy`
+    );
     if (fs.existsSync(embPath)) fs.unlinkSync(embPath);
 
-    // 3. Delete images folder
+    // Delete images folder
     const imgFolder = path.join(
       __dirname,
-      "../../ml-service-python/images",
-      student.name
+      "../../ml-service-python/prof_images",
+      professor.subject
     );
     if (fs.existsSync(imgFolder)) {
       fs.rmSync(imgFolder, { recursive: true, force: true });
     }
 
-    res.redirect("/students");
+    res.redirect("/professors");
   } catch (err) {
     console.error(err);
-    res.status(500).send("Error deleting student: " + err.message);
+    res.status(500).send("Error deleting professor: " + err.message);
   }
 });
 

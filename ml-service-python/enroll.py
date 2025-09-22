@@ -52,46 +52,50 @@ def enroll_face_from_images(user_id, image_folder):
 def enroll_all_people():
     """Automatically enroll all people from their respective folders."""
     images_base_folder = 'images'
-    
-    if not os.path.exists(images_base_folder):
-        print(f"Error: Base images folder '{images_base_folder}' not found.")
-        print("Please create the folder structure: images/person_name/image_files")
-        return
-    
-    # Get all subdirectories (person folders)
-    person_folders = [folder for folder in os.listdir(images_base_folder) 
-                     if os.path.isdir(os.path.join(images_base_folder, folder))]
-    
-    if not person_folders:
-        print("No person folders found in images/")
-        print("Please create folders like: images/karan/, images/pawan/, etc.")
-        return
-    
-    print(f"Found {len(person_folders)} person folders: {person_folders}")
-    print("Starting enrollment process...\n")
+    prof_images_base_folder = 'prof_images'
     
     successful_enrollments = 0
     failed_enrollments = 0
     
-    for person_name in person_folders:
-        person_folder_path = os.path.join(images_base_folder, person_name)
-        success = enroll_face_from_images(person_name, person_folder_path)
-        if success:
-            successful_enrollments += 1
-        else:
-            failed_enrollments += 1
+    # Enroll students
+    if os.path.exists(images_base_folder):
+        person_folders = [folder for folder in os.listdir(images_base_folder) 
+                         if os.path.isdir(os.path.join(images_base_folder, folder))]
+        
+        for person_name in person_folders:
+            person_folder_path = os.path.join(images_base_folder, person_name)
+            success = enroll_face_from_images(person_name, person_folder_path)
+            if success:
+                successful_enrollments += 1
+            else:
+                failed_enrollments += 1
+    
+    # Enroll professors
+    if os.path.exists(prof_images_base_folder):
+        subject_folders = [folder for folder in os.listdir(prof_images_base_folder) 
+                          if os.path.isdir(os.path.join(prof_images_base_folder, folder))]
+        
+        for subject in subject_folders:
+            subject_folder_path = os.path.join(prof_images_base_folder, subject)
+            success = enroll_face_from_images(subject, subject_folder_path)
+            if success:
+                successful_enrollments += 1
+            else:
+                failed_enrollments += 1
     
     print(f"\nEnrollment Summary:")
     print(f"✓ Successful: {successful_enrollments}")
     print(f"✗ Failed: {failed_enrollments}")
-    print(f"Total people processed: {len(person_folders)}")
     
     if successful_enrollments > 0:
         print(f"\nEmbedding files created in embeddings/ folder:")
-        for person_name in person_folders:
-            embedding_file = f'embeddings/{person_name}.npy'
-            if os.path.exists(embedding_file):
-                print(f"  - {embedding_file}")
+        # List all embedding files
+        if os.path.exists('embeddings'):
+            for embedding_file in os.listdir('embeddings'):
+                if embedding_file.endswith('.npy'):
+                    print(f"  - embeddings/{embedding_file}")
+    
+    return successful_enrollments
 
 # Run automatic enrollment for all people
 if __name__ == "__main__":
